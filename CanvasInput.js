@@ -60,7 +60,7 @@
     self._hasFocus = false;
     self._selection = [0, 0];
     self._wasOver = false;
-    boxShadow: function(data, doReturn) {
+    boxShadow: function setShadow(data, doReturn) {
       var self = this;
 
       if (typeof data !== 'undefined') {
