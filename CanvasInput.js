@@ -60,6 +60,49 @@
     self._hasFocus = false;
     self._selection = [0, 0];
     self._wasOver = false;
+    boxShadow: function(data, doReturn) {
+      var self = this;
+
+      if (typeof data !== 'undefined') {
+        // parse box shadow
+        var boxShadow = data.split('px ');
+        self._boxShadow = {
+          x: self._boxShadow === 'none' ? 0 : parseInt(boxShadow[0], 10),
+          y: self._boxShadow === 'none' ? 0 : parseInt(boxShadow[1], 10),
+          blur: self._boxShadow === 'none' ? 0 : parseInt(boxShadow[2], 10),
+          color: self._boxShadow === 'none' ? '' : boxShadow[3]
+        };
+
+        // take into account the shadow and its direction
+        if (self._boxShadow.x < 0) {
+          self.shadowL = Math.abs(self._boxShadow.x) + self._boxShadow.blur;
+          self.shadowR = self._boxShadow.blur + self._boxShadow.x;
+        } else {
+          self.shadowL = Math.abs(self._boxShadow.blur - self._boxShadow.x);
+          self.shadowR = self._boxShadow.blur + self._boxShadow.x;
+        }
+        if (self._boxShadow.y < 0) {
+          self.shadowT = Math.abs(self._boxShadow.y) + self._boxShadow.blur;
+          self.shadowB = self._boxShadow.blur + self._boxShadow.y;
+        } else {
+          self.shadowT = Math.abs(self._boxShadow.blur - self._boxShadow.y);
+          self.shadowB = self._boxShadow.blur + self._boxShadow.y;
+        }
+
+        self.shadowW = self.shadowL + self.shadowR;
+        self.shadowH = self.shadowT + self.shadowB;
+
+        self._calcWH();
+
+        if (!doReturn) {
+          self._updateCanvasWH();
+
+          return self.render();
+        }
+      } else {
+        return self._boxShadow;
+      }
+    },
 
     // parse box shadow
     self.boxShadow(self._boxShadow, true);
